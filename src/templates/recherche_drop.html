@@ -1,0 +1,57 @@
+{% extends "header.html" %}
+{% block content %}
+<body class="bg-secondary p-2 text-black bg-opacity-100">
+	<p class="fs-1 text-white text-align text-center" id="typed"></p>
+	<p class="text-align text-white text-center slideUp" id="sub-d">{{info['titre']}}</p>
+	<div class="searchBar row">
+	<form action="{{info['action']}}" method="POST">
+		<select name="{{info['dropdown']['name']}}" class="form-control mt-1" required>
+			<option value="">...</option>
+			{% for opt in info['dropdown']['content'] %}
+			<option value="{{opt['id']}}">{{opt['name']}}</option>
+			{% endfor %}
+		</select>
+		<div class="form-group  col" style="float: right;">
+			<input type="submit" value="Recherche">
+		</div>
+	</form>
+	</div>
+	{% if list_livre is defined %}
+		<div id="div_list_livre">
+		 {% if list_livre|length > 0%}
+		 	{% for livre in list_livre %}
+				<div class="container recherche_box">
+					<a href="/livre/{{livre['identifiant']}}"><h3>{{livre['titre']}}</h3></a>
+					<div class="row">		
+						<div class="col">
+							<div class="recherche_auteurs">
+							{% for auteur in livre['auteurs'] %}
+								<h5>{{auteur['nom']}}</h5>
+								{% if not loop.last %}
+								,
+								{% endif %}
+							{% endfor %}
+							</div>
+							<div class="recherche_info"> 
+								<h6>{{livre['edition']['nom']}}</h6>
+								<h6>{{livre['categorie']['nom']}}</h6>
+								<h6>{{livre['langue']['nom']}}</h6>
+							</div>
+						</div>
+
+						<div class="col text-end">
+							<div class="recherche_prix">
+								<h4>{{livre['prix_ttc']}}€</h4>
+								<h6> Stock : {{livre['quantite']}}</h6>
+							</div>
+						</div>
+					</div>
+				</div>
+		 	{% endfor %}
+		 {% else %}
+		 	<h3 class="recherche_noresult"> Aucun livre trouvé </h3>
+		 {% endif %}
+		</div>
+	{% endif %}
+</body>
+{% endblock content %}

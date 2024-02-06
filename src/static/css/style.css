@@ -1,0 +1,101 @@
+body{
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+.cache{
+    visibility: hidden;
+}
+
+.searchBar{
+padding-left: 25em;
+padding-right: 25em;
+}
+
+.message_true{
+    color : green;
+    display: flex; 
+    justify-content: center;
+}   
+
+.message_false{
+    color : red;
+    font-size: 90%;
+    font-weight: bolder;
+}   
+
+.auteur{
+    margin-top: -1.3em;
+    font-style: italic;
+    font-size: 110%;
+}
+.titre{
+    font-size: 120%;
+    font-weight: bold;
+}
+.boxinfo{
+    padding : 1em;
+    margin-top: 2em;
+    margin-bottom: -1em;
+    padding-top: 1.7em;
+}
+
+.quantite{
+    margin-top: -1.0em;
+    font-style: italic;
+    font-size: 110%;
+    margin-right: 1.6em;
+}
+
+.box-color{
+    background-color:#f2f2f2b4;
+    box-shadow: 8px 8px 0px 6px rgba(0, 0, 0, 0.65);
+}
+
+.btn{
+    background-color: #c1a3a3c9;
+    border: 0.15em solid black;
+    text-align: center;
+    margin-top: .3em;
+}
+.btn:hover{
+    background-color: rgba(243, 197, 197, 0.336)c9;
+}
+
+
+
+.ui-draggable, .ui-droppable {
+    background-position: top;
+}
+
+/*Recherche*/
+
+.recherche_box {
+    background-color: white; 
+    margin-top: 1%;
+    margin-bottom: 0.5%
+}
+.recherche_box h3{
+    font-weight: bold;
+}
+
+.recherche_auteurs h5{
+    font-style: italic; 
+    display: inline;
+}
+
+.recherche_info{
+}
+
+.recherche_prix h4{
+    font-weight: bold;
+}
+.recherche_prix h6{
+    font-style: italic;
+}
+
+.recherche_noresult{
+    font-style: italic;
+    color: white;
+    text-align: center;
+}

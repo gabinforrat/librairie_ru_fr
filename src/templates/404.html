@@ -1,0 +1,25 @@
+{% extends "header.html" %}
+{% block content %}
+    <body class="bg-secondary p-2 text-black bg-opacity-100 " onload="redirect()">
+		<div class="position-absolute top-50 start-50 translate-middle"> 
+			<h1> Erreur : La page cherché n'a pas été trouvé </h1>
+			<h2 id="countdown"> </h2>
+		</div>
+
+
+		<script language="JavaScript" type="text/javascript"> 
+		//code source: https://www.geeksforgeeks.org/python-404-error-handling-in-flask/
+		var seconds =6; 		  
+		var url="/"; 		  
+		function redirect(){ 
+			if (seconds <=0){ 
+			  	window.location = url; 
+			} else { 
+				seconds--; 
+				document.getElementById("countdown").innerHTML="Redirections vers le menu dans " +seconds+" secondse." 
+				setTimeout("redirect()", 1000) 
+			} 
+		} 
+		</script> 
+	</body>
+{% endblock content %}

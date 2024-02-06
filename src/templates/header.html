@@ -1,0 +1,35 @@
+{% block header %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <![endif]-->
+<html lang="fr">
+    <head>
+        <!--Meta-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{page_title}}</title>
+
+        <!--Javascript-->
+        <script src="{{url_for('static', filename='javascript/typed.js')}}"></script>
+        <script src="{{url_for('static', filename='javascript/jquery-3.7.1.min.js.js')}}"></script>
+        <script src="{{url_for('static', filename='javascript/jquery-ui.js.js')}}"></script>
+
+        <!--Stylesheet-->
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/jquery-ui.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/font.css')}}" >
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/wickedcss.min.css')}}">
+        
+        <!--Icons-->
+        <link rel="shortcut icon"       href="{{url_for('static', filename='/image/icon.png')}}" type="image/png"/>
+        <link rel="apple-touch-icon"    href="{{url_for('static', filename='/image/icon.png')}}" type="image/png"/>
+
+    
+    </head>
+    {% block content %}{% endblock content %}
+{% endblock %}

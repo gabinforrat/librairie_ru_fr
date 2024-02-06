@@ -1,0 +1,153 @@
+{% extends "header.html" %}
+{% block content %}
+    <body class="bg-secondary p-2 text-black bg-opacity-100 ">
+        <form 
+        	action="/sauvegarde" 
+        	method="post" 
+        	class="position-absolute top-50 start-50 bg-opacity-75 translate-middle text-black bg-light rounded p-4 fadeIn" 
+        	id="formL"
+        >
+            <h2 class=" text-align text-center slideUp" id="typed"></h2>
+            <span class="message_true" id="successMsg"></span>
+            <a href="/enregistrement/ISBN">
+              <button type="button" class="btn btn-info text-black mt-4" style="float: right; display: inline-grid;">Enregistrement ISBN</button>
+            </a>
+                <div class="form-group slideUp">
+                    <label class="mt-2" for="titre">Titre</label>
+                    <span id="msgTitre" class="message_false"> </span>
+                    <input id="id_titre" type="text" name="titre" class="mt-1 form-control" required>
+                </div>
+
+                <div class="form-group slideUp "
+>                    <label for="auteur" class="mt-2">Auteur</label>
+                    <span id="msgAuteur" class="message_false"> </span>
+                    <div style="display: table;  width: 100%">
+                      <div id="input_all_auteur" style="display: table-cell; width: 100%">
+                        <input style="width: 100%" id="input_auteur" type="text" class="mt-1 form-control" name="auteur" required />
+                      </div>
+                      <button id="btnNewAuteur" type="button" style="display: block;"> + </button>
+                    </div>
+                </div>
+
+                <div class="row slideUp">
+                    <div class="col">
+                        <label for="quantite" class="mt-2">Quantité</label>
+                        <input type="number" name="quantite" class="mt-1 form-control"
+                        required >
+                    </div>           
+
+                    <div class="col slideUp">
+                        <label for="prix" class="mt-2">Prix unitaire (TTC)</label>
+                        <input type="number" name="prix" min="0" step="any" class="mt-1 form-control" 
+                        required />
+                    </div>
+                </div>
+
+                <div class="row slideUp">
+                    <div class="col">
+                        <label for="annee" class="mt-2">Année d'edition</label>
+                        <input type="number" name="annee" class="mt-1 form-control" required>
+                    </div>           
+
+                    <div class="col slideUp">
+                        <label for="poid" class="mt-2">Poid (g)</label>
+                        <input type="number" name="poid" min="0" step="any" class="mt-1 form-control" />
+                    </div>
+                </div>
+
+
+            <div class="row slideUp">
+                <div class="col">
+                    <label for="langue" class="mt-2">Langue</label>
+                    <span id="msgLang" class="message_false"> </span>
+                    <select name="langue" class="form-control mt-1" required>
+                      <option value="">Langue...</option>
+                      <option value="1">Français</option>
+                      <option value="2">Russe</option>
+                      <option value="3">Ukrainien</option>
+                      <option value="4">Anglais</option>
+                      <option value="5">Allemand</option>
+                      <option value="6">Autre</option>
+                    </select>
+                </div>
+                 
+                <div class="col slideUp">
+                    <label for="categorie" class="mt-2">Catégorie</label>
+                    <span id="msgCat" class="message_false"> </span>
+                    <select name="categorie" class="form-control mt-1" required>
+                      <option value="">Catégorie...</option>
+                      <option value="1">Littérature  </option>
+                      <option value="2">Traductions</option> 
+                      <option value="3">Critique littéraire</option> 
+                      <option value="4">Jeunesse</option> 
+                      <option value="5">Bande Dessiné</option> 
+                      <option value="6">Art</option> 
+                      <option value="7">Linguistique</option> 
+                      <option value="8">Droit</option> 
+                      <option value="9">Economie</option> 
+                      <option value="10">Histoire</option> 
+                      <option value="11">Philosophie</option> 
+                      <option value="12">Science</option> 
+                      <option value="13">Théologie</option> 
+                      <option value="14">Théatre</option> 
+                      <option value="15">Poésie</option> 
+                      <option value="16">Divers</option> 
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group slideUp">
+                <label for="edition" class="mt-2">Edition</label>
+                <span id="msgEdition" class="message_false"> </span>
+                <input id="input_edition" type="text" name="edition" class="mt-1 form-control">
+            </div>
+                <input type="submit" value="Ajouter le livre" class="btn btn-info text-black mt-4" >
+        </form>
+
+        <script type="text/javascript">
+                var typed = new Typed("#typed", {
+                  strings: [
+                  "Enregistrer un livre. 📃"
+                  ],
+                  backSpeed: 40,
+                  typeSpeed: 50,
+                  startDelay: 0,
+                  showCursor: false
+                });
+        </script>
+
+        <script type="text/javascript">
+          $(document).ready(function() {
+              $("#btnNewAuteur").click(function(){
+                $("#input_all_auteur").append('<input id="input_auteur" name="auteur" type="text" class="mt-1 form-control">')
+                auteur_autocomplete();
+              });
+              auteur_autocomplete();
+          });
+        </script>
+
+        <script type="text/javascript">
+          function auteur_autocomplete(){          
+            $(function(){
+              var all_auteur = {{all_auteur|safe}} ;
+              $("input[id='input_auteur']").each(function(){            
+                $(this).autocomplete({
+                  source: all_auteur
+                });
+              });
+            });          
+          }
+        </script>
+
+        <script type="text/javascript">
+          $(function(){
+            var all_edition = {{all_edition|safe}} ;
+            $("input[id='input_edition']").autocomplete({
+              source: all_edition
+            });
+          });
+        </script>
+
+    </body>
+</html>
+{% endblock content %}
