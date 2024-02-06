@@ -35,5 +35,5 @@ Et connectez-vous sur `localhost:8000`
 
 ---
 # Credit
-*Frontend* 	: [Mehdi AISSY](https://github.com/mehdiaissy)
+*Frontend* 	: [Mehdi AISSY](https://github.com/m-aissi)
 *Backend* 	: [Gabin FORRAT](https://github.com/gabinforrat) 
