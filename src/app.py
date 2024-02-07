@@ -3,6 +3,7 @@ import sqlite3
 from translation_ru_fr import transcription_russe_vers_france
 from get_info import get_categories, get_langues
 from datetime import date
+from pathlib import Path
 import csv
 import io
 import re
@@ -14,7 +15,8 @@ Configuration:
 	- Set up app as Flask
 """
 #Base de donnée
-DATABASE = "inventaire.db"
+FOLDER = Path(__file__).parent.resolve()
+DATABASE = f"{str(FOLDER)}/inventaire.db"
 connection = sqlite3.connect(DATABASE, check_same_thread=False)
 cursor = connection.cursor()
 #Flask
