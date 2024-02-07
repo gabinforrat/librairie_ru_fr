@@ -12,6 +12,10 @@
             <a href="/enregistrement/ISBN">
               <button type="button" class="btn btn-info text-black mt-4" style="float: right; display: inline-grid;">Enregistrement ISBN</button>
             </a>
+                <input type="text" name="isbn" 
+                {%if info_isbn is defined%} value="{{info_isbn['isbn']}}"{% endif %} 
+                hidden>
+
                 <div class="form-group slideUp">
                     <label class="mt-2" for="titre">Titre</label>
                     <span id="msgTitre" class="message_false"> </span>  

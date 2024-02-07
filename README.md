@@ -13,7 +13,7 @@ Cette application web permet de gérer un inventaire de librairie, utilisant l'a
 - Génération d'un document comptable français
 
 ## A FAIRE
-- Modification des livres (à terminer)
+- Modification des livres (à terminer)ca
 - Solde / Réduction
 - Enregistrement des ISBN dans la base de donnée
 - Recherche avec l'ISBN

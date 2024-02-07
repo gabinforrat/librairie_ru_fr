@@ -177,8 +177,8 @@ Page pour enregistrer dans la base de donnée les informations du nouveau livre
 """
 @app.route("/sauvegarde",methods=["POST"])
 def livre_sauvegarde():
+	isbn=request.form['isbn']
 	edition=request.form['edition']
-
 	auteurs=request.form.getlist("auteur")
 	auteurs_list = []
 	for a in auteurs:
@@ -194,6 +194,7 @@ def livre_sauvegarde():
 	prix_HT = round(calculHT(float(prix_TTC)),2)
 	
 	livre = {
+		"isbn" : isbn,
 		"titre" : {
 			"orginal" : titre,
 			"traduit" : titre_traduit
@@ -303,12 +304,12 @@ Retour :
 	- id_livre (int) : identifiant du livre dans la base de donnée 
 """
 def database_enregistrement_livre(livre : dir):
-	sqlite_value = (livre['titre']['orginal'],livre['titre']['traduit'],
+	sqlite_value = (livre['isbn'],livre['titre']['orginal'],livre['titre']['traduit'],
 		livre['langue'],livre['id_edition'],livre['categorie'],livre['prix']['ttc'],livre['prix']['ht'],
 		livre['quantite'],livre['annee'],livre['poid'],)
 	sqlite_insert ="""INSERT INTO Livre 
-	(titreOriginal,titreTraduit,lang,edition,categorie,prixTTC,prixHT,quantite,annee,poid) 
-	VALUES(?,?,?,?,?,?,?,?,?,?)"""
+	(ISBN,titreOriginal,titreTraduit,lang,edition,categorie,prixTTC,prixHT,quantite,annee,poid) 
+	VALUES(?,?,?,?,?,?,?,?,?,?,?)"""
 	cursor.execute(sqlite_insert,sqlite_value)
 	connection.commit()
 	cursor.execute("SELECT MAX(idLivre) FROM Livre")
@@ -397,7 +398,7 @@ Returns:
 	- livre (dir) : dictionnaire contenant toutes les informations sur le livre
 """
 def get_info_livre(id : int):
-	sqlite_select_livre = """SELECT L.titreOriginal, L.titreTraduit, L.quantite, L.prixTTC, LAN.idLangue, LAN.nomLangue, C.idCategorie, C.nomCategorie, L.poid, L.annee, E.idEdition, E.nomEdition
+	sqlite_select_livre = """SELECT L.ISBN, L.titreOriginal, L.titreTraduit, L.quantite, L.prixTTC, LAN.idLangue, LAN.nomLangue, C.idCategorie, C.nomCategorie, L.poid, L.annee, E.idEdition, E.nomEdition
 	FROM Livre AS L, Edition AS E, LienAuteurLivre AS LAL, Categorie AS C, Langue AS LAN
 	WHERE L.idLivre = ?
 	AND LAL.idLivre = L.idLivre
@@ -422,24 +423,25 @@ def get_info_livre(id : int):
 
 	livre = {
 		"identifiant" : int(id),
-		"titre" : livre_result[0],
-		"titre_traduit" : livre_result[1],
+		"isbn" : livre_result[0],
+		"titre" : livre_result[1],
+		"titre_traduit" : livre_result[2],
 		"auteurs" : [],
-		"quantite" : livre_result[2],
-		"prix_ttc" : livre_result[3],
+		"quantite" : livre_result[3],
+		"prix_ttc" : livre_result[4],
 		"langue": {
-			"identifiant" : livre_result[4],
-			"nom" : livre_result[5]
+			"identifiant" : livre_result[5],
+			"nom" : livre_result[6]
 		},
 		"categorie" : {
-			"identifiant" : livre_result[6],
-			"nom" : livre_result[7]
+			"identifiant" : livre_result[7],
+			"nom" : livre_result[8]
 		},
-		"poid" : livre_result[8],
-		"annee": livre_result[9],
+		"poid" : livre_result[9],
+		"annee": livre_result[10],
 		"edition" : {
-			"identifiant" : livre_result[10],
-			"nom" : livre_result[11]
+			"identifiant" : livre_result[11],
+			"nom" : livre_result[12]
 		}
 	}
 
@@ -579,6 +581,29 @@ def recherche_langue():
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
 		return render_template('recherche_drop.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
+
+#ISBN
+## Chercher
+@app.route("/recherche/ISBN",methods=['GET','POST'])
+def isbn_recherche():
+	page_title = f"{TITLE} | Recherche : ISBN"
+	info_page = {
+		"recherche" : "isbn",
+		"action" : "/recherche/ISBN",
+		"titre" : "Recherche d'un livre par son ISBN",
+	}
+
+	if request.method == 'GET':
+		return render_template('recherche.html',page_title=page_title,info=info_page)
+	else:
+		recherche_isbn = request.form.get('isbn').replace(" ","")
+		recherche_isbn = recherche_isbn.replace("-","")
+		sqlite_recherche_isbn = "SELECT idLivre FROM Livre WHERE ISBN=?"
+		sqlite_value = (str(recherche_isbn),)
+		cursor.execute(sqlite_recherche_isbn,sqlite_value)
+		recherche_result = cursor.fetchall()
+		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		return render_template('recherche.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
 
 
 # Exporter
