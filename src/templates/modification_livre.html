@@ -10,19 +10,23 @@
             <input type="number" name="id" value="{{livre['identifiant']}}" hidden>
 
             <h2 class=" text-align text-center slideUp" id="typed"></h2>
-            <span class="message_true" id="successMsg"></span>
             <div class="form-group slideUp">
                 <label class="mt-2" for="titre">Titre</label>
                 <span id="msgTitre" class="message_false"> </span>
-                <input id="id_titre" type="text" name="titre" class="mt-1 form-control" 
+                <input id="id_titre" type="text" name="titre" class="mt-1 form-control"
                 value="{{livre['titre']}}" required>
             </div>
 
             <div class="form-group slideUp">
                 <label class="mt-2" for="titre">Titre traduit</label>
-                <span id="msgTitre" class="message_false"> </span>
                 <input id="id_titre" type="text" name="titre_traduit" class="mt-1 form-control" 
                 value="{{livre['titre_traduit']}}" required>
+            </div>
+
+            <div class="form-group slideUp">
+                <label class="mt-2" for="titre">ISBN</label>
+                <input id="id_titre" type="number" name="isbn" class="mt-1 form-control" 
+                value="{{livre['isbn']}}">
             </div>
 
             <div class="form-group slideUp ">
