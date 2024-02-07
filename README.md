@@ -3,6 +3,7 @@ Cette application web permet de gérer un inventaire de librairie, utilisant l'a
 
 ## Fonctionnalités
 - Enregistrement sans ISBN
+- Enregistrement avec l'aide de l'ISBN
 - Recherche en fonction: 
 	- Du titre
 	- De l'auteur
@@ -14,7 +15,8 @@ Cette application web permet de gérer un inventaire de librairie, utilisant l'a
 ## A FAIRE
 - Modification des livres (à terminer)
 - Solde / Réduction
-- Enregistrement avec ISBN
+- Enregistrement des ISBN dans la base de donnée
+- Recherche avec l'ISBN
 
 ### Idées possibles
 - Panier ?

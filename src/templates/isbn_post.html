@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<form
+		name="isbn_form"
+		method="POST"
+		action="/enregistrement"
+	>
+		<input type="number" name="isbn" value="{{info_isbn['isbn']}}">
+		<input type="text" name="titre" value="{{info_isbn['titre']}}">
+		{% for auteur in info_isbn['auteurs'] %}
+		<input type="text" name="auteurs" value="{{auteur}}">
+		{% endfor %}
+		<input type="number" name="annee" value="{{info_isbn['annee']}}">
+		<input type="number" name="langue_id" value="{{info_isbn['langue']['id']}}">
+		<input type="text" name="langue_nom" value="{{info_isbn['langue']['nom']}}">
+		<input type="text" name="edition" value="{{info_isbn['edition']}}">
+	</form>
+
+	<script type="text/javascript">
+		window.onload = function() {
+			document.forms["isbn_form"].submit();
+		}
+	</script>
+</body>
+</html>
+

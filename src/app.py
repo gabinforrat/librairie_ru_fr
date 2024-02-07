@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request, render_template, redirect, Response, abort
+from flask import Flask, make_response, request, render_template, redirect, Response, abort, url_for
 import sqlite3
 from translation_ru_fr import transcription_russe_vers_france
 from get_info import get_categories, get_langues
@@ -6,7 +6,7 @@ from datetime import date
 import csv
 import io
 import re
-
+import requests
 
 """
 Configuration:
@@ -55,52 +55,120 @@ def main():
 """
 Page pour entrer les informations d'un nouveau livre à enregistrer
 """
-@app.route("/enregistrement",methods=["GET"])
+@app.route("/enregistrement",methods=["GET","POST"])
 def livre_enregistrement():
 	page_title = TITLE + "| Enregistrement"
 	all_auteur = get_all_auteur()
 	all_edition = get_all_edition()
-	return render_template("enregistrement_livre.html",page_title=page_title,all_auteur=str(all_auteur),all_edition=str(all_edition))
+	if request.method == 'GET':
+		return render_template("enregistrement_livre.html",page_title=page_title,all_auteur=str(all_auteur),all_edition=str(all_edition))
+	else :
+		isbn = request.form.get("isbn")
+		titre = request.form.get("titre")
+		auteurs = request.form.getlist("auteurs")
+		langue = {
+			"id" : request.form.get("langue_id"),
+			"nom": request.form.get("langue_nom")
+		}
+		edition = request.form.get("edition")
+		annee = request.form.get("annee")
+		info_isbn = {
+			"isbn" : isbn,
+			"titre" : titre,
+			"auteurs" : auteurs,
+			"langue" : langue,
+			"edition" : edition,
+			"annee" : annee,
+		}
+		return render_template("enregistrement_livre.html",page_title=page_title,all_auteur=str(all_auteur),all_edition=str(all_edition),info_isbn=info_isbn)
+
 
 @app.route("/enregistrement/ISBN",methods=["GET"])
-def livre_enregistrement_ISBN(warning : str =""):
+def livre_enregistrement_ISBN():
 	page_title = TITLE + "| Enregistrement"
-	if warning != "":
-		return warning
-		# return render_template("enregistrement_livre_ISBN.html",page_title=page_title, warning=warning)
-	else:
+	erreur = request.args.get('e')
+	isbn = request.args.get('isbn')
+	if erreur == None:
 		return render_template("enregistrement_livre_ISBN.html",page_title=page_title)
+	else:
+		return render_template("enregistrement_livre_ISBN.html",page_title=page_title,erreur=erreur,isbn=isbn)
 
 @app.route("/ISBN",methods=["POST"])
 def get_ISBN():
-	isbn=request.form['isbn']
-	# Regex from: https://stackoverdlow.com/questions/41271613/use-regex-to-verify-an-isbn-number
+	isbn=request.form['isbn'].replace(" ","")
+	# Source Regex: https://stackoverdlow.com/questions/41271613/use-regex-to-verify-an-isbn-number
 	regex_isbn = r"^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$"
 	if re.match(regex_isbn,isbn):
 		isbn = isbn.replace("-","")
-		isbn = isbn.replace(" ","")
-		# isbn_int = int(isbn)
-		# Check Digit : https://en.wikipedia.org/wiki/ISBN#Check_digit
+		# Vérification ISBN : https://en.wikipedia.org/wiki/ISBN#Check_digit
 		s = 0
-		for i in range(0,10):
-			s += int(isbn[i])*(10-i)
-		if s%11:
-			return "Yes"
-		# return str(len(str(isbn)))
+		r = ""
+		if len(isbn) == 10:
+			for i in range(0,10):
+				s += int(isbn[i])*(10-i)
+			if s%11!=0:
+				return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_invalide", isbn=isbn))
+		else:
+			for i in range(0,13):
+				# Echangé par rapport au calcul puisque l'on commence à 0
+				if i%2==0: 
+					s+= int(isbn[i])
+				else:
+					s+= int(isbn[i])*3
+			if s%10!=0:
+				return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_invalide", isbn=isbn))
 	else:
-		return "Invalid"
-
-	# If regex valid:
-	# 	check if ISBN is valid
-	#	If ISBN not valid
-	# 		return to /enregistrement/ISBN with an alert saying that it is invalid
-	# 	get info 
-	# 	redirect to enregistrement, with filled input with those info
-	# Else:
-	# 	return to /enregistrement/ISBN with an alert saying that it is invalid
+		return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_invalide", isbn=isbn))
+	link_book = f"https://openlibrary.org/isbn/{isbn}.json" 
+	book_request = requests.get(link_book)
+	if book_request.status_code == 404:
+		return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_introuvable", isbn=isbn))
 
 
-	return isbn
+	book_json = book_request.json()
+
+	if "languages" in book_json:
+		match book_json["languages"][0]["key"][-3:]:
+			case "fre":
+				info_langue = {"id" : 1, "nom": "Français"}
+			case "rus":
+				info_langue = {"id" : 2, "nom": "Russe"}
+			case "ukr":
+				info_langue = {"id" : 3, "nom": "Ukrainien"}
+			case "eng":
+				info_langue = {"id" : 4, "nom": "Anglais"}
+			case "gem":
+				info_langue = {"id" : 5, "nom": "Allemand"}
+			case _:
+				info_langue = {"id" : 6, "nom": "Autre"}
+	else:
+		info_langue = None
+
+	if "publishers" in book_json:
+		info_edition = book_json['publishers'][0]
+	else:
+		info_edition = None
+
+	if "publish_date" in book_json:
+		info_annee = re.findall(r'\d{4}',book_json["publish_date"])[0]
+	else:
+		info_annee = None
+
+	info_auteurs = []
+	if "authors" in book_json:
+		for a in book_json["authors"]:
+			info_auteurs.append(requests.get(f"https://openlibrary.org{a['key']}.json").json()["name"]) 
+
+	info_isbn = {
+		"isbn" : isbn,
+		"titre" : book_json['title'],
+		"auteurs" : info_auteurs,
+		"langue" : info_langue,
+		"edition" : info_edition,
+		"annee" : info_annee,
+	}
+
+	return render_template("isbn_post.html",info_isbn=info_isbn)
 
 """
 Page pour enregistrer dans la base de donnée les informations du nouveau livre

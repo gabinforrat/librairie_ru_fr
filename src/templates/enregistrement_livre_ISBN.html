@@ -1,14 +1,27 @@
 {% extends "header.html" %}
 {% block content %}
 	<body class="bg-secondary p-2 text-black bg-opacity-100 ">
+		{% if erreur is defined %}
+		<script type="text/javascript">
+			{% if erreur == "ISBN_introuvable"%}
+			alert("Le livre lié à cet ISBN n'est pas enregistré")
+			{% elif erreur == "ISBN_invalide" %}
+			alert("L'ISBN entré n'est pas valide")
+			{% endif %}
+		</script>
+		{% endif %}
+
 		<form
 			action="/ISBN"
 			method="post"
 			class="position-absolute top-50 start-50 bg-opacity-75 translate-middle text-black bg-light rounded p-4 fadeIn"
 		>
             <h2 class=" text-align text-center slideUp"> Enregistrement livre par ISBN</h2>
-
-			<input type="text" name="isbn" style="width: 70%" pattern="^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$">
+            {% if isbn is defined %}
+			<input value="{{isbn}}" type="text" name="isbn" style="width: 70%">
+            {% else %}
+			<input type="text" name="isbn" style="width: 70%">
+			{% endif %}
 			<input type="submit" value="Chercher" style="width: 19%">
 		</form>
 	</body>

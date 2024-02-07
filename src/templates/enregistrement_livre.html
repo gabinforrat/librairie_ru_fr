@@ -14,16 +14,27 @@
             </a>
                 <div class="form-group slideUp">
                     <label class="mt-2" for="titre">Titre</label>
-                    <span id="msgTitre" class="message_false"> </span>
+                    <span id="msgTitre" class="message_false"> </span>  
+                    {% if info_isbn is defined%}
+                    <input id="id_titre" type="text" name="titre" class="mt-1 form-control" value="{{info_isbn['titre']}}" required>
+                    {% else %}
                     <input id="id_titre" type="text" name="titre" class="mt-1 form-control" required>
+                    {% endif %}
                 </div>
 
                 <div class="form-group slideUp "
+  }
 >                    <label for="auteur" class="mt-2">Auteur</label>
                     <span id="msgAuteur" class="message_false"> </span>
                     <div style="display: table;  width: 100%">
                       <div id="input_all_auteur" style="display: table-cell; width: 100%">
+                        {% if info_isbn is defined%}
+                          {% for auteur in info_isbn['auteurs']%}
+                          <input style="width: 100%" id="input_auteur" type="text" class="mt-1 form-control" name="auteur" value="{{auteur}}" required />
+                          {% endfor %}
+                        {% else%}
                         <input style="width: 100%" id="input_auteur" type="text" class="mt-1 form-control" name="auteur" required />
+                        {% endif%}
                       </div>
                       <button id="btnNewAuteur" type="button" style="display: block;"> + </button>
                     </div>
@@ -46,7 +57,11 @@
                 <div class="row slideUp">
                     <div class="col">
                         <label for="annee" class="mt-2">Année d'edition</label>
+                        {% if info_isbn is defined%}
+                        <input type="number" name="annee" class="mt-1 form-control" value="{{info_isbn['annee']}}" required>
+                        {% else %}
                         <input type="number" name="annee" class="mt-1 form-control" required>
+                        {% endif %}
                     </div>           
 
                     <div class="col slideUp">
@@ -61,7 +76,14 @@
                     <label for="langue" class="mt-2">Langue</label>
                     <span id="msgLang" class="message_false"> </span>
                     <select name="langue" class="form-control mt-1" required>
+                      {% if info_isbn is defined%}
+                      <option value="{{info_isbn['langue']['id']}}" selected> 
+                        {{info_isbn['langue']['nom']}}
+                      </option>
+                      <option value="" disabled="">-------</option>
+                      {% else %}
                       <option value="">Langue...</option>
+                      {% endif %}
                       <option value="1">Français</option>
                       <option value="2">Russe</option>
                       <option value="3">Ukrainien</option>
@@ -99,7 +121,11 @@
             <div class="form-group slideUp">
                 <label for="edition" class="mt-2">Edition</label>
                 <span id="msgEdition" class="message_false"> </span>
+                {% if info_isbn is defined%}
+                <input id="input_edition" type="text" name="edition" class="mt-1 form-control" value="{{info_isbn['edition']}}">
+                {% else %}
                 <input id="input_edition" type="text" name="edition" class="mt-1 form-control">
+                {% endif %}
             </div>
                 <input type="submit" value="Ajouter le livre" class="btn btn-info text-black mt-4" >
         </form>
