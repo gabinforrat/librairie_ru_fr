@@ -1,33 +1,28 @@
 PRAGMA encoding = "UTF-8"; --  Change encryption en UTF-8 qui supporte les caractères cyriliques https://www.sqlite.org/pragma.html#pragma_encoding
-
-DROP TABLE Auteur;
-DROP TABLE Categorie;
-DROP TABLE Edition;
-DROP TABLE Langue;
-DROP TABLE Livre;
-DROP TABLE LienAuteurLivre;
+DROP TABLE IF EXISTS Auteur;
+DROP TABLE IF EXISTS Categorie;
+DROP TABLE IF EXISTS Edition;
+DROP TABLE IF EXISTS Langue;
+DROP TABLE IF EXISTS Livre;
+DROP TABLE IF EXISTS LienAuteurLivre;
 
 CREATE TABLE Auteur(
 	idAuteur INTEGER PRIMARY KEY AUTOINCREMENT,
 	nomAuteur CHAR(60) NOT NULL,
 	nomTraduit CHAR(60)
 );
-
 CREATE TABLE Categorie(
 	idCategorie INTEGER PRIMARY KEY AUTOINCREMENT,
 	nomCategorie CHAR(60) NOT NULL
 );
-
 CREATE TABLE Edition(
 	idEdition INTEGER PRIMARY KEY AUTOINCREMENT,
 	nomEdition CHAR(60) NOT NULL
 );
-
 CREATE TABLE Langue(
 	idLangue INTEGER PRIMARY KEY AUTOINCREMENT,
 	nomLangue CHAR(10) NOT NULL
 );
-
 CREATE TABLE Livre(
 	idLivre INTEGER PRIMARY KEY AUTOINCREMENT,
 	ISBN  INTEGER,
@@ -48,7 +43,6 @@ CREATE TABLE Livre(
 	FOREIGN KEY(categorie)
 		REFERENCES Categorie(idCategorie)
 );
-
 CREATE TABLE LienAuteurLivre(
 	idLivre INTEGER,
 	idAuteur INTEGER,
@@ -58,10 +52,8 @@ CREATE TABLE LienAuteurLivre(
 	FOREIGN KEY(idAuteur)
 		REFERENCES Auteur(idAuteur)
 );
-
 -- AUTEUR
 INSERT INTO AUTEUR(nomAuteur,nomTraduit) VALUES("Inconnu","Inconnu");
-
 -- CATEGORIE
 INSERT INTO CATEGORIE(idCategorie,nomCategorie) VALUES(1,"Littérature");
 INSERT INTO CATEGORIE(idCategorie,nomCategorie) VALUES(2,"Traductions");
@@ -79,7 +71,6 @@ INSERT INTO CATEGORIE(idCategorie,nomCategorie) VALUES(13,"Théologie");
 INSERT INTO CATEGORIE(idCategorie,nomCategorie) VALUES(14,"Théatre");
 INSERT INTO CATEGORIE(idCategorie,nomCategorie) VALUES(15,"Poésie");
 INSERT INTO CATEGORIE(idCategorie,nomCategorie) VALUES(16,"Divers");
-
 -- LANGUE
 INSERT INTO LANGUE(idLangue,nomLangue) VALUES(1,"Français");
 INSERT INTO LANGUE(idLangue,nomLangue) VALUES(2,"Russe");

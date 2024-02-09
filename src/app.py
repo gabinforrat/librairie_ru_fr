@@ -8,6 +8,7 @@ import csv
 import io
 import re
 import requests
+import os
 
 """
 Configuration:
@@ -17,8 +18,19 @@ Configuration:
 #Base de donnée
 FOLDER = Path(__file__).parent.resolve()
 DATABASE = f"{str(FOLDER)}/inventaire.db"
-connection = sqlite3.connect(DATABASE, check_same_thread=False)
-cursor = connection.cursor()
+if os.path.isfile(DATABASE):
+	connection = sqlite3.connect(DATABASE, check_same_thread=False)
+	cursor = connection.cursor()
+else:
+	f = open(DATABASE,"a")
+	f.close()
+	with open(f"{str(Path(__file__).parent.parent)}/database.sql",'r') as file:
+		database_script = file.read()
+	connection = sqlite3.connect(DATABASE, check_same_thread=False)
+	cursor = connection.cursor()
+	cursor.executescript(database_script)
+	connection.commit()
+
 #Flask
 app = Flask(__name__)
 
