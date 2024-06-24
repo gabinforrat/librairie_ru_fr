@@ -14,15 +14,13 @@ Cette application web permet de gérer un inventaire de librairie, utilisant l'a
 - Génération d'un document comptable français
 
 ## A FAIRE
-- Modification des livres (à terminer)ca
 - Solde / Réduction
 
-### Idées possibles
-- Panier ?
-- Vente au poid ? 
 
 ---
 # Instalation
+Nécessite : Python, pip et sqlite3 
+
 ```sh
 pip install -r requirement.txt
 cat database.sql > sqlite3 src/inventaire.db
@@ -32,6 +30,7 @@ Pour lancer l'application utilisez:
 python3 src/app.py
 ```
 Et connectez-vous sur `localhost:8000`
+
 
 
 ---
