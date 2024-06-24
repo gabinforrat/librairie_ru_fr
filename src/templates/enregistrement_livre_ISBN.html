@@ -1,10 +1,10 @@
 {% extends "header.html" %}
 {% block content %}
-	<body class="bg-secondary p-2 text-black bg-opacity-100 ">
 		{% if erreur is defined %}
 		<script type="text/javascript">
 			{% if erreur == "ISBN_introuvable"%}
 			alert("Le livre lié à cet ISBN n'est pas enregistré")
+			window.location = "/enregistrement";
 			{% elif erreur == "ISBN_invalide" %}
 			alert("L'ISBN entré n'est pas valide")
 			{% endif %}
@@ -24,6 +24,4 @@
 			{% endif %}
 			<input type="submit" value="Chercher" style="width: 19%">
 		</form>
-	</body>
-<html>
 {% endblock content %}

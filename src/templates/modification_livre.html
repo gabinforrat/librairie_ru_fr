@@ -1,8 +1,7 @@
 {% extends "header.html" %}
 {% block content %}
-    <body class="bg-secondary p-2 text-black bg-opacity-100 ">
         <form 
-        	action="/sauvegarde" 
+        	action="/modifie" 
         	method="post" 
         	class="position-absolute top-50 start-50 bg-opacity-75 translate-middle text-black bg-light rounded p-4 fadeIn" 
         	id="formL"
@@ -36,19 +35,19 @@
                 <div id="input_all_auteur" style="display: table-cell;">
                   {% for auteur in livre['auteurs']%}
                   <div>
-                  <input style="width: 90%; display: inline-block;" type="text" class="mt-1 form-control" name="auteur" value="{{auteur['nom']}}"/>
-                  <button type="button" class="delete_auteur" style="display: inline-block; width: 5%">-</button>
-                  </div>
+                  <input style="width: 100%; display: inline-block;" type="text" class="mt-1 form-control" name="auteur" value="{{auteur['nom']}}" readonly/>
+<!--                   <button type="button" class="delete_auteur" style="display: inline-block; width: 5%">-</button>
+ -->                  </div>
                   {% endfor %}
                 </div>
-                <button type="button" id="btnNewAuteur">+</button>
-              </div>
+<!--                 <button type="button" id="btnNewAuteur">+</button>
+ -->              </div>
             </div>
 
             <div class="row slideUp">
                 <div class="col">
                     <label for="quantite" class="mt-2">Quantité</label>
-                    <input type="number" name="quantite" class="mt-1 form-control"
+                    <input type="number" name="quantite" class="mt-1 form-control" min="0" 
                     value="{{livre['quantite']}}" required >
                 </div>           
 
@@ -122,6 +121,10 @@
             </div>
 
             <input type="submit" value="Modifier le livre" class="btn btn-info text-black mt-4" >
+
+            <button type="button" class="btn btn-info text-black mt-4" style="float: right;" onclick="btn_supp()">
+              Supprimer
+            </button>
         </form>
 
         <script type="text/javascript">
@@ -170,14 +173,21 @@
         </script>
 
         <script type="text/javascript">
-          $(function(){
-            var div = $(".delete_auteur").bind('click',function(){
-             $(this).parent().remove()
+            $(function del(){
+              var div = $(".delete_auteur").bind('click',function(){
+               // $(this).parent().remove()
+               alert(1);
+              });
             });
-          });
-
         </script>
 
-    </body>
-</html>
+        <script type="text/javascript">
+          function btn_supp(){
+            let answer = confirm("Êtes-vous sûr de vouloir supprimer l'entrée de ce livre ?");
+            if(answer==true){
+              window.location = "/suppression/{{livre['identifiant']}}"
+            }
+          }
+        </script>
+
 {% endblock content %}

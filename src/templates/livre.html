@@ -1,20 +1,15 @@
 {% extends "header.html" %}
 {% block content %}
-    <body class="bg-secondary p-2 text-black bg-opacity-100 ">
-		<div 
-			class="position-absolute top-50 start-50 bg-opacity-75 translate-middle text-black bg-light rounded p-4 fadeIn" 
-		>
-			<h1> {{livre['titre']}}</h1>
+	<div 
+		class="position-absolute top-50 start-50 bg-opacity-75 translate-middle text-black bg-light rounded p-4 fadeIn" 
+	>
+		<h1> {{livre['titre']}}</h1>
 
-			<label for="lst_auteurs"> Auteurs </label>
-			<ul name="lst_auteurs">
-				{% for a in livre['auteurs'] %}
-				<li> {{a['nom']}} </li>
-				{% endfor %}
-			</ul>
-		</div>
-
-
-
-    </body>
+		<label for="lst_auteurs"> Auteurs </label>
+		<ul name="lst_auteurs">
+			{% for a in livre['auteurs'] %}
+			<li> {{a['nom']}} </li>
+			{% endfor %}
+		</ul>
+	</div>
 {% endblock content %}

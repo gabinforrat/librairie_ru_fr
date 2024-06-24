@@ -232,6 +232,89 @@ def livre_sauvegarde():
 	database_enregistrement_lien_livre_auteurs(id_livre,id_auteurs)
 	return redirect(f"/livre/{id_livre}")
 
+
+def livre_modifie_bd(livre):
+	sqlite_update = """UPDATE Livre Set  
+	ISBN = ?,
+	titreOriginal = ?,
+	titreTraduit = ?,
+	lang = ?,
+	edition = ?,
+	categorie = ?,
+	prixTTC = ?,
+	prixHT = ?,
+	quantite = ?,
+	annee = ?,
+	poid = ?
+	WHERE idLivre = ?
+	"""
+
+	sqlite_value = (
+		livre["isbn"], 
+		livre["titre"]["original"], 
+		livre["titre"]["traduit"],
+		livre["langue"],
+		livre["edition"],
+		livre["categorie"],
+		livre["prix"]["ttc"],
+		livre["prix"]["ht"],
+		livre["quantite"],
+		livre["annee"],
+		livre["poid"],
+		livre["id_livre"],
+	)
+	cursor.execute(sqlite_update,sqlite_value)
+
+
+
+@app.route("/modifie",methods=["POST"])
+def livre_modifie():
+	id_livre = request.form['id']
+	isbn=request.form['isbn']
+	edition=request.form['edition']
+	auteurs=request.form.getlist("auteur")
+	auteurs_list = []
+	# for a in auteurs:
+	# 	auteurs_list.append({
+	# 		"original" : str(a),
+	# 		"traduit" : transcription_russe_vers_france(a),
+	# 		})
+
+	titre=request.form['titre']
+	titre_traduit = request.form['titre_traduit']
+
+	prix_TTC=request.form['prix']
+	prix_HT = round(calculHT(float(prix_TTC)),2)
+	
+	id_edition = database_enregistrement_edition(edition)
+
+	livre = {
+		"id_livre" : id_livre,
+		"isbn" : isbn,
+		"titre" : {
+			"original" : titre,
+			"traduit" : titre_traduit
+		},
+		"quantite" : int(request.form['quantite']),
+		"prix" : {
+			"ttc" : float(prix_TTC),
+			"ht" : float(prix_HT),
+		},
+		"langue": int(request.form['langue']),
+		"categorie" : int(request.form['categorie']),
+		"poid" :  0.0,
+		"annee":  int(request.form['annee']),
+		"edition" : id_edition,
+		# "auteurs" : auteurs,
+	}
+	poid = request.form['poid']
+	if poid:
+		livre['poid'] = float(poid)
+
+	livre_modifie_bd(livre)
+	
+	return redirect(f"/livre/{id_livre}")
+
 """
 Function pour récupérer l'identifiant de la maison d'édition dans l'inventaire.
 Enregistre les nouvelles maisons d'éditions.
@@ -366,7 +449,6 @@ def get_all_edition():
 		list_edition.append(e[0])
 	return list_edition
 
-
 ## Page Livre
 @app.route("/livre/<id>",methods=["GET"])
 def livre_resume(id : int):
@@ -485,7 +567,21 @@ def livre_recherche():
 		cursor.execute(sqlite_recherche_titre,sqlite_value)
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		recherche_list_livre = [i for i in recherche_list_livre if i is not None]
 		return render_template('recherche.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
+
+## Supprimer
+@app.route("/suppression/<id>")
+def supprimer_livre(id : int):
+	sqlite_value = (str(id),)
+	sqlite_delete = "DELETE FROM Livre WHERE idLivre = ?"
+	cursor.execute(sqlite_delete,sqlite_value)
+	sqlite_delete = "DELETE FROM LienAuteurLivre WHERE idLivre = ?"
+	cursor.execute(sqlite_delete,sqlite_value)
+	connection.commit()
+	return redirect("/")
+
+
 
 
 # Auteur
@@ -514,6 +610,7 @@ def auteur_recherche():
 		cursor.execute(sqlite_recherche_auteur,sqlite_value)
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		recherche_list_livre = [i for i in recherche_list_livre if i is not None]
 		return render_template('recherche.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
 
 # Edition
@@ -536,6 +633,7 @@ def edition_recherche():
 		cursor.execute(sqlite_recherche_edition,sqlite_value)
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		recherche_list_livre = [i for i in recherche_list_livre if i is not None]
 		return render_template('recherche.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
 
 # Categorie
@@ -565,6 +663,7 @@ def categorie_recherche():
 		cursor.execute(sqlite_recherche_categorie,sqlite_value)
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		recherche_list_livre = [i for i in recherche_list_livre if i is not None]
 		return render_template('recherche_drop.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
 
 # Langue
@@ -592,6 +691,7 @@ def recherche_langue():
 		cursor.execute(sqlite_recherche_langue,sqlite_value)
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		recherche_list_livre = [i for i in recherche_list_livre if i is not None]
 		return render_template('recherche_drop.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
 
 #ISBN
@@ -615,6 +715,7 @@ def isbn_recherche():
 		cursor.execute(sqlite_recherche_isbn,sqlite_value)
 		recherche_result = cursor.fetchall()
 		recherche_list_livre = [get_info_livre(l[0]) for l in recherche_result]
+		recherche_list_livre = [i for i in recherche_list_livre if i is not None]
 		return render_template('recherche.html',page_title=page_title,info=info_page,list_livre=recherche_list_livre)
 
 
@@ -661,6 +762,8 @@ def csvFile():
 	return output.getvalue()
 
 
+
+
 """
 Error 404 | Redirection après n secondes : https://www.geeksforgeeks.org/python-404-error-handling-in-flask/
 """
@@ -673,10 +776,5 @@ def erreur500(e):
 	return "probleme d'execution"
 
 if __name__ == '__main__':
-	app.run(host="0.0.0.0", port="8000", debug=True)
+	app.run(host="0.0.0.0", port="8000", debug=False)
 
-"""
-Modification auteurs:
-On peut ajouter ou supprimer un auteur, mais pas le modifier 
---> Sinon beaucoup trop chiant à gérer
-"""
