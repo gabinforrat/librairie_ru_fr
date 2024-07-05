@@ -31,6 +31,7 @@ Et connectez-vous sur `localhost:8000`
 
 ## Entrée par fichier
 Remplir le fichier `Entree_Inventaire_Massive.ods`
+
 Pour ajouter
 ```sh
 python3 src/ods_entree.py
