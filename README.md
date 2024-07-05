@@ -13,10 +13,6 @@ Cette application web permet de gérer un inventaire de librairie, utilisant l'a
 	- De l'ISBN
 - Génération d'un document comptable français
 
-## A FAIRE
-- Solde / Réduction
-
-
 ---
 # Instalation
 Nécessite : Python, pip et sqlite3 
@@ -25,13 +21,20 @@ Nécessite : Python, pip et sqlite3
 pip install -r requirement.txt
 cat database.sql > sqlite3 src/inventaire.db
 ```
+
+## Application Web
 Pour lancer l'application utilisez:
 ```sh
 python3 src/app.py
 ```
 Et connectez-vous sur `localhost:8000`
 
-
+## Entrée par fichier
+Remplir le fichier `Entree_Inventaire_Massive.ods`
+Pour ajouter
+```sh
+python3 src/ods_entree.py
+```
 
 ---
 # Credit
