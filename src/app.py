@@ -221,7 +221,7 @@ def livre_sauvegarde():
 	solde = request.form['solde']
 	if solde:
 		livre['solde'] = float(solde)
-		
+
 	livre["id_edition"] = database_enregistrement_edition(edition)
 	id_livre = database_enregistrement_livre(livre)
 	id_auteurs = database_enregistrement_auteurs(auteurs_list)
@@ -736,7 +736,7 @@ Return :
 """
 def csvFile():
 	command_sql="""
-	SELECT L.idLivre, L.TitreTraduit, GROUP_CONCAT(A.nomTraduit), E.nomEdition, La.nomLangue, C.nomCategorie, L.prixTTC,L.prixHT, L.quantite 
+	SELECT L.idLivre, L.TitreTraduit, GROUP_CONCAT(A.nomTraduit), E.nomEdition, La.nomLangue, C.nomCategorie, L.prixTTC,L.prixHT, L.quantite, L.solde
 	FROM Auteur AS A, Categorie AS C, Edition AS E, Langue AS La, Livre AS L , LienAuteurLivre AS LAL
 	WHERE A.idAuteur = LAL.idAuteur
 	AND LAL.idLivre = L.idLivre
@@ -748,13 +748,21 @@ def csvFile():
 	cursor.execute(command_sql)
 	list_bd = cursor.fetchall()
 
-	csv_fields = ['TITRE','AUTEUR(S)','EDITION','LANGUE','CATEGORIE','PRIX(HT)','PRIX(TTC)','QUANTITE','PRIX GLOBAL (HT)','PRIX GLOBAL (TTC)']
+	csv_fields = ['TITRE','AUTEUR(S)','EDITION','LANGUE','CATEGORIE','PRIX(HT)','PRIX(TTC)','PRIX SOLDE (TTC)','QUANTITE','PRIX GLOBAL (HT)','PRIX GLOBAL (TTC)','PRIX GLOBAL SOLDE (TTC)']
 	csv_filename =str(date.today()) +"-DocumentComptable.csv"
 	output = io.StringIO()
 	writer = csv.DictWriter(output, quoting=csv.QUOTE_NONNUMERIC,fieldnames=csv_fields)
 	writer.writeheader()
 	for each in list_bd:
-		writer.writerow({'TITRE':each[1],'AUTEUR(S)':each[2],'EDITION':each[3],'LANGUE':each[4],'CATEGORIE':each[5],'PRIX(HT)':each[7],'PRIX(TTC)':each[6],'QUANTITE':each[8],'PRIX GLOBAL (HT)':each[7]*each[8],'PRIX GLOBAL (TTC)':each[6]*each[8]})
+		writer.writerow(
+			{
+			'TITRE':each[1],'AUTEUR(S)':each[2],'EDITION':each[3],'LANGUE':each[4],
+			'CATEGORIE':each[5],'PRIX(HT)':each[7],'PRIX(TTC)':each[6],
+			'PRIX SOLDE (TTC)':each[6]-((each[9]/100)*each[6]),'QUANTITE':each[8],
+			'PRIX GLOBAL (HT)':each[7]*each[8],'PRIX GLOBAL (TTC)':each[6]*each[8], 
+			'PRIX GLOBAL SOLDE (TTC)':each[8]*(each[6]-((each[9]/100)*each[6]))
+			}
+		)
 	return output.getvalue()
 
 
