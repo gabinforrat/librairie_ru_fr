@@ -38,7 +38,7 @@
 
 						<div class="col text-end">
 							<div class="recherche_prix">
-								<h4>{{livre['prix_ttc']}}€</h4>
+								<h4>{{livre['prix_ttc']-livre['prix_ttc']*(livre['solde']/100)}}€</h4>
 								<h6> Stock : {{livre['quantite']}}</h6>
 							</div>
 						</div>

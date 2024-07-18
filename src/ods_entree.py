@@ -47,6 +47,7 @@ for row in sheet.values:
 		"poid" :  0.0,
 		"annee":  0,
 		"id_edition" : 0,
+		"solde" : 0.0,
 	}
 
 	# Titre

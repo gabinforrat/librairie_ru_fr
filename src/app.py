@@ -50,14 +50,6 @@ Retour:
 def calculHT(prixTTC):
 	return (prixTTC/TVA)
 
-########
-# TEST #
-@app.route("/test",methods=["GET","POST"])
-def test():
-	return "Test"
-
-########
-
 @app.route("/",methods=["GET"])
 def main():
 	page_title = TITLE
@@ -221,11 +213,15 @@ def livre_sauvegarde():
 		"poid" :  0.0,
 		"annee":  int(request.form['annee']),
 		"id_edition" : -1,
+		"solde" : 0.0,
 	}
 	poid = request.form['poid']
 	if poid:
 		livre['poid'] = float(poid)
-
+	solde = request.form['solde']
+	if solde:
+		livre['solde'] = float(solde)
+		
 	livre["id_edition"] = database_enregistrement_edition(edition)
 	id_livre = database_enregistrement_livre(livre)
 	id_auteurs = database_enregistrement_auteurs(auteurs_list)
@@ -245,7 +241,8 @@ def livre_modifie_bd(livre):
 	prixHT = ?,
 	quantite = ?,
 	annee = ?,
-	poid = ?
+	poid = ?,
+	solde = ?
 	WHERE idLivre = ?
 	"""
 
@@ -261,6 +258,7 @@ def livre_modifie_bd(livre):
 		livre["quantite"],
 		livre["annee"],
 		livre["poid"],
+		livre["solde"],
 		livre["id_livre"],
 	)
 	cursor.execute(sqlite_update,sqlite_value)
@@ -274,14 +272,8 @@ def livre_modifie():
 	edition=request.form['edition']
 	auteurs=request.form.getlist("auteur")
 	auteurs_list = []
-	# for a in auteurs:
-	# 	auteurs_list.append({
-	# 		"original" : str(a),
-	# 		"traduit" : transcription_russe_vers_france(a),
-	# 		})
-
 	titre=request.form['titre']
-	titre_traduit = request.form['titre_traduit']
+	titre_traduit = request.form['titre_traduit']	
 
 	prix_TTC=request.form['prix']
 	prix_HT = round(calculHT(float(prix_TTC)),2)
@@ -305,11 +297,14 @@ def livre_modifie():
 		"poid" :  0.0,
 		"annee":  int(request.form['annee']),
 		"edition" : id_edition,
-		# "auteurs" : auteurs,
+		"solde" : 0.0
 	}
 	poid = request.form['poid']
 	if poid:
 		livre['poid'] = float(poid)
+	solde = request.form['solde']
+	if solde:
+		livre['solde'] = float(solde)
 
 	livre_modifie_bd(livre)
 	
@@ -401,10 +396,10 @@ Retour :
 def database_enregistrement_livre(livre : dir):
 	sqlite_value = (livre['isbn'],livre['titre']['orginal'],livre['titre']['traduit'],
 		livre['langue'],livre['id_edition'],livre['categorie'],livre['prix']['ttc'],livre['prix']['ht'],
-		livre['quantite'],livre['annee'],livre['poid'],)
+		livre['quantite'],livre['annee'],livre['poid'],livre['solde'])
 	sqlite_insert ="""INSERT INTO Livre 
-	(ISBN,titreOriginal,titreTraduit,lang,edition,categorie,prixTTC,prixHT,quantite,annee,poid) 
-	VALUES(?,?,?,?,?,?,?,?,?,?,?)"""
+	(ISBN,titreOriginal,titreTraduit,lang,edition,categorie,prixTTC,prixHT,quantite,annee,poid,solde) 
+	VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"""
 	cursor.execute(sqlite_insert,sqlite_value)
 	connection.commit()
 	cursor.execute("SELECT MAX(idLivre) FROM Livre")
@@ -492,7 +487,7 @@ Returns:
 	- livre (dir) : dictionnaire contenant toutes les informations sur le livre
 """
 def get_info_livre(id : int):
-	sqlite_select_livre = """SELECT L.ISBN, L.titreOriginal, L.titreTraduit, L.quantite, L.prixTTC, LAN.idLangue, LAN.nomLangue, C.idCategorie, C.nomCategorie, L.poid, L.annee, E.idEdition, E.nomEdition
+	sqlite_select_livre = """SELECT L.ISBN, L.titreOriginal, L.titreTraduit, L.quantite, L.prixTTC, LAN.idLangue, LAN.nomLangue, C.idCategorie, C.nomCategorie, L.poid, L.annee, E.idEdition, E.nomEdition, L.solde
 	FROM Livre AS L, Edition AS E, LienAuteurLivre AS LAL, Categorie AS C, Langue AS LAN
 	WHERE L.idLivre = ?
 	AND LAL.idLivre = L.idLivre
@@ -535,8 +530,9 @@ def get_info_livre(id : int):
 		"annee": livre_result[10],
 		"edition" : {
 			"identifiant" : livre_result[11],
-			"nom" : livre_result[12]
-		}
+			"nom" : livre_result[12],
+		},
+		"solde" : livre_result[13],
 	}
 
 	for auteur in auteurs_result:
@@ -776,5 +772,5 @@ def erreur500(e):
 	return "probleme d'execution"
 
 if __name__ == '__main__':
-	app.run(host="0.0.0.0", port="8000", debug=False)
+	app.run(host="0.0.0.0", port="8000", debug=True)
 

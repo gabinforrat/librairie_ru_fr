@@ -36,12 +36,10 @@
                   {% for auteur in livre['auteurs']%}
                   <div>
                   <input style="width: 100%; display: inline-block;" type="text" class="mt-1 form-control" name="auteur" value="{{auteur['nom']}}" readonly/>
-<!--                   <button type="button" class="delete_auteur" style="display: inline-block; width: 5%">-</button>
- -->                  </div>
+                  </div>
                   {% endfor %}
                 </div>
-<!--                 <button type="button" id="btnNewAuteur">+</button>
- -->              </div>
+              </div>
             </div>
 
             <div class="row slideUp">
@@ -55,6 +53,17 @@
                     <label for="prix" class="mt-2">Prix unitaire (TTC)</label>
                     <input type="number" name="prix" min="0" step="any" class="mt-1 form-control" value="{{livre['prix_ttc']}}" 
                     required />
+                </div>
+            </div>
+
+            <div class="row slideUp">
+                <div class="col">
+                  <label for="solde" class="mt-2">Solde (%)</label>
+                  <input type="number" name="solde" min="0" max="100" step="0.01" class="mt-1 form-control" 
+                  value="{{livre['solde']}}">
+                </div>       
+
+                <div class="col slideUp">
                 </div>
             </div>
 

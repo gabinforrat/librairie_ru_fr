@@ -38,6 +38,20 @@
 		</div>
 	</div>
 
+    <div class="row slideUp">
+        <div class="col">
+          <label for="solde" class="mt-2">Solde (%)</label>
+          <input type="number" name="solde" min="0" max="100" step="0.01" class="mt-1 form-control" 
+          value="{{livre['solde']}}" readonly="">
+        </div>       
+
+        <div class="col slideUp">
+          <label for="solde" class="mt-2">Prix Soldé </label>
+          <input type="number" name="prix_solde" class="mt-1 form-control" 
+          value="{{livre['prix_ttc']-livre['prix_ttc']*(livre['solde']/100)}}" readonly="">
+        </div>
+    </div>
+
 	<div class="row slideUp">
 		<div class="col">
 			<label for="annee" class="mt-2">Année d'edition</label>

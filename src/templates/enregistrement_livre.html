@@ -65,6 +65,17 @@
 
                 <div class="row slideUp">
                     <div class="col">
+                      <label for="solde" class="mt-2">Solde (%)</label>
+                      <input type="number" name="solde" min="0" max="100" step="0.01" class="mt-1 form-control" 
+                      value="0.0">
+                    </div>       
+
+                    <div class="col slideUp">
+                    </div>
+                </div>
+                
+                <div class="row slideUp">
+                    <div class="col">
                         <label for="annee" class="mt-2">Année d'edition</label>
                         {% if info_isbn is defined%}
                         <input type="number" name="annee" class="mt-1 form-control" value="{{info_isbn['annee']}}" required>

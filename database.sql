@@ -36,6 +36,7 @@ CREATE TABLE Livre(
 	quantite INTEGER,
 	annee INTEGER,
 	poid REAL,
+	solde REAL,
 	FOREIGN KEY(lang)
 		REFERENCES Langue(idLangue)
 	FOREIGN KEY(edition)
