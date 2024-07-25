@@ -38,17 +38,17 @@ app = Flask(__name__)
 Variable Global
 """
 TITLE = "Les Editeurs Réunis"
-TVA = 1.2
+TVA = 0.055
 
 """
 Calcul le prix sans taxe depuis le prix avec.
 Arguments:
 	- prixTTC : prix toute taxe comprise
-Retour: 
+Retour:
 	- Prix Hors Taxe (HT)
 """
 def calculHT(prixTTC):
-	return (prixTTC/TVA)
+    return float("%.2f" % (prixTTC-prixTTC*TVA))
 
 @app.route("/",methods=["GET"])
 def main():
@@ -117,7 +117,7 @@ def get_ISBN():
 		else:
 			for i in range(0,13):
 				# Echangé par rapport au calcul puisque l'on commence à 0
-				if i%2==0: 
+				if i%2==0:
 					s+= int(isbn[i])
 				else:
 					s+= int(isbn[i])*3
@@ -125,7 +125,7 @@ def get_ISBN():
 				return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_invalide", isbn=isbn))
 	else:
 		return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_invalide", isbn=isbn))
-	link_book = f"https://openlibrary.org/isbn/{isbn}.json" 
+	link_book = f"https://openlibrary.org/isbn/{isbn}.json"
 	book_request = requests.get(link_book)
 	if book_request.status_code == 404:
 		return redirect(url_for('livre_enregistrement_ISBN',e="ISBN_introuvable", isbn=isbn))
@@ -163,7 +163,7 @@ def get_ISBN():
 	info_auteurs = []
 	if "authors" in book_json:
 		for a in book_json["authors"]:
-			info_auteurs.append(requests.get(f"https://openlibrary.org{a['key']}.json").json()["name"]) 
+			info_auteurs.append(requests.get(f"https://openlibrary.org{a['key']}.json").json()["name"])
 
 	info_isbn = {
 		"isbn" : isbn,
@@ -196,7 +196,7 @@ def livre_sauvegarde():
 
 	prix_TTC=request.form['prix']
 	prix_HT = round(calculHT(float(prix_TTC)),2)
-	
+
 	livre = {
 		"isbn" : isbn,
 		"titre" : {
@@ -230,7 +230,7 @@ def livre_sauvegarde():
 
 
 def livre_modifie_bd(livre):
-	sqlite_update = """UPDATE Livre Set  
+	sqlite_update = """UPDATE Livre Set
 	ISBN = ?,
 	titreOriginal = ?,
 	titreTraduit = ?,
@@ -247,8 +247,8 @@ def livre_modifie_bd(livre):
 	"""
 
 	sqlite_value = (
-		livre["isbn"], 
-		livre["titre"]["original"], 
+		livre["isbn"],
+		livre["titre"]["original"],
 		livre["titre"]["traduit"],
 		livre["langue"],
 		livre["edition"],
@@ -273,11 +273,11 @@ def livre_modifie():
 	auteurs=request.form.getlist("auteur")
 	auteurs_list = []
 	titre=request.form['titre']
-	titre_traduit = request.form['titre_traduit']	
+	titre_traduit = request.form['titre_traduit']
 
 	prix_TTC=request.form['prix']
 	prix_HT = round(calculHT(float(prix_TTC)),2)
-	
+
 	id_edition = database_enregistrement_edition(edition)
 
 	livre = {
@@ -307,7 +307,7 @@ def livre_modifie():
 		livre['solde'] = float(solde)
 
 	livre_modifie_bd(livre)
-	
+
 	return redirect(f"/livre/{id_livre}")
 
 """
@@ -315,7 +315,7 @@ Function pour récupérer l'identifiant de la maison d'édition dans l'inventair
 Enregistre les nouvelles maisons d'éditions.
 
 Arguments:
-	- nom_edition (str) : nom de la maison d'édition 
+	- nom_edition (str) : nom de la maison d'édition
 Retour :
 	- id_edition (int) : identifiant de la maison d'édition dans la base de donnée
 """
@@ -341,9 +341,9 @@ def database_enregistrement_edition(nom_edition : str = ""):
 
 
 """
-Function pour récupérer les identifiants de la liste des auteurs 
+Function pour récupérer les identifiants de la liste des auteurs
 Arguments:
-	- auteurs (list of dir) : Liste des noms auteurs sous forme de dictionnaires (avec le nom original et le nom traduit) 
+	- auteurs (list of dir) : Liste des noms auteurs sous forme de dictionnaires (avec le nom original et le nom traduit)
 Retour :
 	- id_auteurs_list (list of int) : Liste des identifiants des auteurs
 """
@@ -358,7 +358,7 @@ def database_enregistrement_auteurs(auteurs : list):
 Function pour récupérer l'identifiant d'un auteur.
 Enregistre les auteurs inconnus.
 Arguments:
-	- auteur_original (str) : Nom de l'auteur comme entré par l'utilisateur 
+	- auteur_original (str) : Nom de l'auteur comme entré par l'utilisateur
 	- auteur_traduit (str) : Nom de l'auteur passé à l'alphabet latin
 Retour :
 	- id_auteur : identiant de l'auteur
@@ -391,14 +391,14 @@ Fonction pour enregistrer un nouveau livre
 Arguments:
 	- livre (dir) : directory avec toutes les informations sur le livre à l'exception de son (ses) auteur(s)
 Retour :
-	- id_livre (int) : identifiant du livre dans la base de donnée 
+	- id_livre (int) : identifiant du livre dans la base de donnée
 """
 def database_enregistrement_livre(livre : dir):
 	sqlite_value = (livre['isbn'],livre['titre']['orginal'],livre['titre']['traduit'],
 		livre['langue'],livre['id_edition'],livre['categorie'],livre['prix']['ttc'],livre['prix']['ht'],
 		livre['quantite'],livre['annee'],livre['poid'],livre['solde'])
-	sqlite_insert ="""INSERT INTO Livre 
-	(ISBN,titreOriginal,titreTraduit,lang,edition,categorie,prixTTC,prixHT,quantite,annee,poid,solde) 
+	sqlite_insert ="""INSERT INTO Livre
+	(ISBN,titreOriginal,titreTraduit,lang,edition,categorie,prixTTC,prixHT,quantite,annee,poid,solde)
 	VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"""
 	cursor.execute(sqlite_insert,sqlite_value)
 	connection.commit()
@@ -433,7 +433,7 @@ def get_all_auteur():
 	return list_auteurs
 
 """
-Fonction qui renvoie la liste de toute les éditions 
+Fonction qui renvoie la liste de toute les éditions
 """
 def get_all_edition():
 	list_edition = []
@@ -491,7 +491,7 @@ def get_info_livre(id : int):
 	FROM Livre AS L, Edition AS E, LienAuteurLivre AS LAL, Categorie AS C, Langue AS LAN
 	WHERE L.idLivre = ?
 	AND LAL.idLivre = L.idLivre
-	AND E.idEdition = L.edition 
+	AND E.idEdition = L.edition
 	AND C.idCategorie = L.categorie
 	AND LAN.idLangue = L.lang
 	"""
@@ -595,9 +595,9 @@ def auteur_recherche():
 	else:
 		recherche_auteur = request.form.get('auteur')
 		sqlite_recherche_auteur = """
-		SELECT LAL.idLivre 
-		FROM LienAuteurLivre AS LAL, Auteur AS A 
-		WHERE LAL.idAuteur = A.idAuteur 
+		SELECT LAL.idLivre
+		FROM LienAuteurLivre AS LAL, Auteur AS A
+		WHERE LAL.idAuteur = A.idAuteur
 		AND (A.nomAuteur LIKE '%' || ? || '%'
 		OR A.nomTraduit LIKE '%' || ? || '%')
 		GROUP BY LAL.idLivre
@@ -639,7 +639,7 @@ def edition_recherche():
 Recherche des livres d'une catégorie
 """
 @app.route("/recherche/categorie",methods=['GET','POST'])
-def categorie_recherche():	
+def categorie_recherche():
 	page_title = f"{TITLE} | Recherche : Categorie"
 	info_page = {
 		"action" : "/recherche/categorie",
@@ -731,7 +731,7 @@ def export():
 
 """
 Fonction pour générer le document comptable
-Return : 
+Return :
 	- Fichier csv sous la forme d'une chaine de caractère
 """
 def csvFile():
@@ -741,7 +741,7 @@ def csvFile():
 	WHERE A.idAuteur = LAL.idAuteur
 	AND LAL.idLivre = L.idLivre
 	AND C.idCategorie = L.categorie
-	AND E.idEdition = L.edition 
+	AND E.idEdition = L.edition
 	AND La.idLangue = L.lang
 	GROUP BY L.idLivre;
 	"""
@@ -759,7 +759,7 @@ def csvFile():
 			'TITRE':each[1],'AUTEUR(S)':each[2],'EDITION':each[3],'LANGUE':each[4],
 			'CATEGORIE':each[5],'PRIX(HT)':each[7],'PRIX(TTC)':each[6],
 			'PRIX SOLDE (TTC)':each[6]-((each[9]/100)*each[6]),'QUANTITE':each[8],
-			'PRIX GLOBAL (HT)':each[7]*each[8],'PRIX GLOBAL (TTC)':each[6]*each[8], 
+			'PRIX GLOBAL (HT)':each[7]*each[8],'PRIX GLOBAL (TTC)':each[6]*each[8],
 			'PRIX GLOBAL SOLDE (TTC)':each[8]*(each[6]-((each[9]/100)*each[6]))
 			}
 		)
@@ -771,7 +771,7 @@ def csvFile():
 """
 Error 404 | Redirection après n secondes : https://www.geeksforgeeks.org/python-404-error-handling-in-flask/
 """
-@app.errorhandler(404) 
+@app.errorhandler(404)
 def erreur404(e):
 	return render_template("404.html",page_title=TITLE+" | Page non trouvé")
 
@@ -780,5 +780,4 @@ def erreur500(e):
 	return "probleme d'execution"
 
 if __name__ == '__main__':
-	app.run(host="0.0.0.0", port="8000", debug=True)
-
+	app.run(host="0.0.0.0", port="8000", debug=False)
