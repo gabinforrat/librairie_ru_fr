@@ -67,7 +67,7 @@
 
                     <div class="col slideUp">
                         <label for="prix" class="mt-2">Prix unitaire (TTC)</label>
-                        <input type="number" name="prix" min="0" step="any" class="mt-1 form-control"
+                        <input id="prix" type="number" name="prix" min="0" step="any" class="mt-1 form-control"
                         required />
                     </div>
                 </div>
@@ -75,11 +75,13 @@
                 <div class="row slideUp">
                     <div class="col">
                       <label for="solde" class="mt-2">Solde (%)</label>
-                      <input type="number" name="solde" min="0" max="100" step="0.01" class="mt-1 form-control"
+                      <input id="solde_pourcent" type="number" name="solde" min="0" max="100" step="0.01" class="mt-1 form-control"
                       value="0.0">
                     </div>
 
                     <div class="col slideUp">
+                      <label for="prix_solde" class="mt-2">Prix Soldé</label>
+                      <input id="solde_prix" type="number" name="prix_solde" class="mt-1 form-control" value="">
                     </div>
                 </div>
 
@@ -202,4 +204,17 @@
             });
           });
         </script>
+
+        <script type="text/javascript">
+          $('#solde_pourcent').change(function(){
+            $('#solde_prix').val(($('#solde_pourcent').val()/100)*$('#prix').val());
+          });
+        </script>
+        <script type="text/javascript">
+          $('#solde_prix').change(function(){
+            $('#solde_pourcent').val(($('#solde_prix').val()/$('#prix').val())*100);
+          });
+        </script>
+
+
 {% endblock content %}
