@@ -1,10 +1,10 @@
-# Inventaire Librairie 
-Cette application web permet de gérer un inventaire de librairie, utilisant l'alphabet latin et cyrilique. 
+# Inventaire Librairie
+Cette application web permet de gérer un inventaire de librairie, utilisant l'alphabet latin et cyrilique.
 
 ## Fonctionnalités
 - Enregistrement sans ISBN
 - Enregistrement avec l'aide de l'ISBN
-- Recherche en fonction: 
+- Recherche en fonction:
 	- Du titre
 	- De l'auteur
 	- De l'édition
@@ -15,7 +15,7 @@ Cette application web permet de gérer un inventaire de librairie, utilisant l'a
 
 ---
 # Instalation
-Nécessite : Python, pip et sqlite3 
+Nécessite : Python, pip et sqlite3
 
 ```sh
 pip install -r requirement.txt
@@ -31,13 +31,16 @@ Et connectez-vous sur `localhost:8000`
 
 ## Entrée par fichier
 Remplir le fichier `Entree_Inventaire_Massive.ods`
+Si nécessaire de retrouver une version vierge du fichier : [Github](https://github.com/gabinforrat/librairie_ru_fr/blob/main/Entree_Inventaire_Massive.ods)
 
-Pour ajouter
+Pour l'ajouter
 ```sh
 python3 src/ods_entree.py
 ```
 
 ---
+
+---
 # Credit
 *Frontend* 	: [Mehdi AISSY](https://github.com/m-aissi)
-*Backend* 	: [Gabin FORRAT](https://github.com/gabinforrat) 
+*Backend* 	: [Gabin FORRAT](https://github.com/gabinforrat)
